@@ -1,0 +1,119 @@
+.card {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  height: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform-origin: bottom center;
+  transform: translateX(-50%);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, width, box-shadow, border-radius;
+  background: white;
+}
+
+.card.expanded {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  height: 100vh;
+  width: 100vw !important;
+  transform: translateX(-50%);
+  transform-origin: bottom center;
+  z-index: 1000;
+  cursor: default;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.card-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  opacity: 1;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, padding;
+}
+
+.text-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #333;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, font-size, padding;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  transform-origin: bottom center;
+}
+
+.text-content.expanded {
+  font-size: 18px;
+  padding: 40px;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.text-editor {
+  width: 100%;
+  height: 100%;
+  padding: 40px;
+  box-sizing: border-box;
+  border: none;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #333;
+  background: transparent;
+  resize: none;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, font-size, padding;
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #333;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, background-color;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.close-button:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: scale(1.1);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+} 
