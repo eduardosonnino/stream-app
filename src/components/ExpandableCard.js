@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ExpandableCard.css';
 
-const ExpandableCard = ({ url, title, style = {} }) => {
+const ExpandableCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const cardRef = useRef(null);
+  const overlayRef = useRef(null);
 
   useEffect(() => {
     const updateCardWidth = () => {
@@ -42,22 +43,16 @@ const ExpandableCard = ({ url, title, style = {} }) => {
     setIsExpanded(!isExpanded);
   };
 
-  const combinedStyle = {
-    ...style,
-    zIndex: isExpanded ? 1000 : style.zIndex || 'auto'
-  };
-
   return (
     <div 
       ref={cardRef} 
       className={`card ${isExpanded ? 'expanded' : ''}`}
-      style={combinedStyle}
     >
       <div className="card-overlay" onClick={toggleExpand} />
       <div className="card-content">
         <iframe
-          src={url}
-          title={title}
+          src="https://en.wikipedia.org/wiki/Atlassian"
+          title="Atlassian Wikipedia"
           className="web-frame"
           sandbox="allow-same-origin allow-scripts"
           loading="lazy"
