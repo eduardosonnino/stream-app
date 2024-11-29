@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './ExpandableCard.css';
 
-const ExpandableCard = ({ initialText = "Click to edit this text..." }) => {
+const ExpandableCard = ({ url, title, style = {} }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [text, setText] = useState(initialText);
-  const [isEditing, setIsEditing] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const cardRef = useRef(null);
 
   useEffect(() => {
@@ -33,104 +28,41 @@ const ExpandableCard = ({ initialText = "Click to edit this text..." }) => {
 
   useEffect(() => {
     const handleEscKey = (event) => {
-      if (event.key === 'Escape') {
-        if (isEditing) {
-          setIsEditing(false);
-        } else if (isExpanded) {
-          setIsExpanded(false);
-        }
+      if (event.key === 'Escape' && isExpanded) {
+        setIsExpanded(false);
       }
     };
 
     document.addEventListener('keydown', handleEscKey);
     return () => document.removeEventListener('keydown', handleEscKey);
-  }, [isExpanded, isEditing]);
+  }, [isExpanded]);
 
-  const handleMouseDown = (e) => {
-    if (!isExpanded && !isEditing) {
-      setIsDragging(true);
-      setDragStart({
-        x: e.clientX - position.x,
-        y: e.clientY - position.y
-      });
-    }
+  const toggleExpand = (e) => {
+    e.stopPropagation();
+    setIsExpanded(!isExpanded);
   };
 
-  const handleMouseMove = (e) => {
-    if (isDragging && !isExpanded) {
-      const newX = e.clientX - dragStart.x;
-      const newY = e.clientY - dragStart.y;
-      setPosition({ x: newX, y: newY });
-    }
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-    }
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, dragStart]);
-
-  const toggleExpand = () => {
-    if (!isEditing && !isDragging) {
-      setIsExpanded(!isExpanded);
-    }
-  };
-
-  const handleTextClick = (e) => {
-    if (isExpanded) {
-      e.stopPropagation();
-      setIsEditing(true);
-    }
-  };
-
-  const handleTextChange = (e) => {
-    setText(e.target.value);
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
-  };
-
-  const cardStyle = {
-    transform: isExpanded 
-      ? 'translate(-50%, 0)' 
-      : `translate(${position.x}px, ${position.y}px)`
+  const combinedStyle = {
+    ...style,
+    zIndex: isExpanded ? 1000 : style.zIndex || 'auto'
   };
 
   return (
     <div 
       ref={cardRef} 
-      className={`card ${isExpanded ? 'expanded' : ''} ${isDragging ? 'dragging' : ''}`}
-      style={cardStyle}
-      onMouseDown={handleMouseDown}
+      className={`card ${isExpanded ? 'expanded' : ''}`}
+      style={combinedStyle}
     >
-      <div className="card-content" onClick={toggleExpand}>
-        {isEditing ? (
-          <textarea
-            className="text-editor"
-            value={text}
-            onChange={handleTextChange}
-            onBlur={handleBlur}
-            autoFocus
-            onClick={(e) => e.stopPropagation()}
-          />
-        ) : (
-          <div 
-            className={`text-content ${isExpanded ? 'expanded' : ''}`}
-            onClick={handleTextClick}
-          >
-            {text}
-          </div>
-        )}
+      <div className="card-overlay" onClick={toggleExpand} />
+      <div className="card-content">
+        <iframe
+          src={url}
+          title={title}
+          className="web-frame"
+          sandbox="allow-same-origin allow-scripts"
+          loading="lazy"
+          referrerPolicy="origin"
+        />
         {isExpanded && (
           <button className="close-button" onClick={(e) => {
             e.stopPropagation();
